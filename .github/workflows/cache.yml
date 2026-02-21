@@ -1,0 +1,39 @@
+name: Cache Prime Workflow
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  prime-cache:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare dependency directories
+        run: |
+          mkdir -p ~/.cache/pip
+          mkdir -p ~/.npm
+          mkdir -p ~/.m2/repository
+          mkdir -p node_modules
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.npm
+            ~/.m2/repository
+            node_modules
+          key: cache-b666c9e
+
+      - name: prime-cache-b666c9e
+        run: |
+          if [ "${{ steps.cache.outputs.cache-hit }}" == "true" ]; then
+            echo "CACHE HIT"
+          else
+            echo "CACHE MISS"
+          fi
